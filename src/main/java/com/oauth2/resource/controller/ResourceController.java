@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import com.oauth2.resource.service.MockDataService;
+import com.oauth2.resource.config.RequestLoggingFilter;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,9 @@ public class ResourceController {
         
         if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
             Jwt jwt = (Jwt) authentication.getPrincipal();
+            
+            // Set user context for structured logging
+            RequestLoggingFilter.setUserContext(jwt.getSubject(), jwt.getClaimAsString("aud"));
             
             logger.info("JWT Token Details:");
             logger.info("  Subject: {}", jwt.getSubject());
